@@ -1,0 +1,6 @@
+Start time: 20:42:37 on Feb 26,2025
+qverilog test.sv 
+** Error: test.sv(3): (qverilog-2163) Macro `uvm_component_utils is undefined.
+** Error: (qverilog-13069) test.sv(3): near "(": syntax error, unexpected '(', expecting implements or ';'.
+End time: 20:42:37 on Feb 26,2025, Elapsed time: 0:00:00
+Errors: 2, Warnings: 0

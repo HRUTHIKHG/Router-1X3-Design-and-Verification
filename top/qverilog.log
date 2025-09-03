@@ -1,0 +1,17 @@
+Start time: 12:20:48 on Feb 24,2025
+qverilog top.sv 
+-- Compiling module top
+-- Importing package mtiUvm.uvm_pkg (uvm-1.1d Built-in)
+** Note: (qverilog-2286) top.sv(7): Using implicit +incdir+/home/cad/eda/Mentor_Graphics/Questasim/questasim/uvm-1.1d/../verilog_src/uvm-1.1d/src from import uvm_pkg
+
+Top level modules:
+	top
+# vsim -lib work work.top -c -do "run -all; quit -f" -appendlog -l qverilog.log -vopt 
+# ** Note: (vsim-3812) Design is being optimized...
+# ** Error: top.sv(20): Module 'router_top' is not defined.
+#  For instance 'DUV' at path 'top'
+# Optimization failed
+# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=1, Warnings=0.
+# Error loading design
+# End time: 12:20:49 on Feb 24,2025, Elapsed time: 0:00:01
+# Errors: 1, Warnings: 0

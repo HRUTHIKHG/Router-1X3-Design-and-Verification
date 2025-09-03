@@ -1,0 +1,89 @@
+module fifo(clk,rst,soft_rst,re,we,lfd_state,empty,full,data_in,data_out);
+input clk,rst,soft_rst,re,we,lfd_state;
+input[7:0]data_in;
+output empty,full;
+output reg[7:0]data_out;
+reg[4:0]rd_ptr,wr_ptr;
+reg[6:0]fifo_counter;
+reg lfd_state_s;
+reg[8:0]mem[15:0];
+integer i;
+//read and write
+always@(posedge clk)
+begin
+	if(!rst)
+	begin
+		rd_ptr<=5'b0;
+		wr_ptr<=5'b0;
+	end
+	else if(soft_rst)
+	begin
+		rd_ptr<=5'b0;
+		wr_ptr<=5'b0;
+	end
+	else
+	begin
+		if(re&&!empty)
+			rd_ptr<=rd_ptr+1;
+		else
+			rd_ptr<=rd_ptr;
+		if(we&&!full)
+			wr_ptr<=wr_ptr+1;
+		else
+			wr_ptr<=wr_ptr;
+	end
+end
+//lfd state delay
+always@(posedge clk)
+begin
+	if(!rst)
+		lfd_state_s<=0;
+	else
+		lfd_state_s<=lfd_state;
+end
+//write op
+always@(posedge clk)
+begin
+	if(!rst)
+	begin
+		for(i=0;i<16;i=i+1)
+			mem[i]<=0;
+	end
+	else if(soft_rst)
+	begin
+		for(i=0;i<16;i=i+1)
+			mem[i]<=0;
+	end
+	else if(we&&!full)
+		mem[wr_ptr[3:0]]<={lfd_state_s,data_in};
+end
+//read op
+always@(posedge clk)
+begin
+	if(!rst)
+		data_out<=8'h0;
+	else if(soft_rst)
+		data_out<=8'hz;
+	else if(re&&!empty)
+		data_out<=mem[rd_ptr[3:0]];
+end
+//fifo counter
+always@(posedge clk)
+begin
+	if(!rst)
+		fifo_counter<=0;
+	else if(soft_rst)
+		fifo_counter<=0;
+	else if(re&&!empty)
+	begin
+		if(mem[rd_ptr[3:0]][8]==1)
+			fifo_counter<=mem[rd_ptr[3:0]][7:2]+1;
+		else if(fifo_counter!=0)
+			fifo_counter<=fifo_counter-1;
+	end
+end
+//empty and full
+assign full=(wr_ptr[4]!=rd_ptr[4])&&(wr_ptr[3:0]==rd_ptr[3:0])?1'b1:1'b0;
+assign empty=(wr_ptr==rd_ptr)?1'b1:1'b0;
+endmodule
+
